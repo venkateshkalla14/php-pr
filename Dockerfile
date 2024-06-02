@@ -1,19 +1,20 @@
+# Use an official PHP runtime as a parent image
 FROM php:7.4-apache
 
-# Install MySQLi extension
-RUN docker-php-ext-install mysqli
+# Set the working directory
+WORKDIR /var/www/html
 
-# Copy application source code to the container
+# Copy the current directory contents into the container at /var/www/html
 COPY . /var/www/html/
 
-# Ensure the permissions are correct for the Apache web server
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+# Install PHP extensions required by the application
+RUN docker-php-ext-install mysqli
 
-# Copy the custom PHP configuration file
-COPY config.php /var/www/html/config.php
+# Set correct permissions
+RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
+# Expose port 80
 EXPOSE 80
 
-# Start the Apache service
+# Start Apache service
 CMD ["apache2-foreground"]
